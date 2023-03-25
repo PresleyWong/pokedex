@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CatchingPokemonIcon from "@mui/icons-material/CatchingPokemon";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import ColorModeButton from "./ColorModeButton";
 import { useGetPokemonGenerationsQuery } from "../redux/api/pokemonAPI";
@@ -97,7 +98,7 @@ const Header = () => {
               variant="h6"
               noWrap
               component="a"
-              href="/"
+              href="/pokedex/"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -149,8 +150,9 @@ const Header = () => {
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               <Button
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ my: 2, color: "white" }}
                 onClick={handleOpenNavMenu}
+                endIcon={<KeyboardArrowDownIcon />}
               >
                 Generations
               </Button>

@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { indexAPI } from "./api/indexAPI";
+import { pokemonAPI } from "./api/pokemonAPI";
 import pokedexReducer from "./features/pokedex/pokedexSlice";
 
 export const store = configureStore({
   reducer: {
-    [indexAPI.reducerPath]: indexAPI.reducer,
+    [pokemonAPI.reducerPath]: pokemonAPI.reducer,
     pokedex: pokedexReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({}).concat([indexAPI.middleware]),
+    getDefaultMiddleware({}).concat([pokemonAPI.middleware]),
 });

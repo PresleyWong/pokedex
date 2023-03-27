@@ -1,11 +1,13 @@
-import { indexAPI } from "./indexAPI";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const extendedindexAPI = indexAPI.injectEndpoints({
-  tagTypes: ["Pokemon"],
+export const pokemonAPI = createApi({
+  reducerPath: "pokemonAPI",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://pokeapi.co/api/v2/" }),
+  tagTypes: ["Pokedex"],
   endpoints: (builder) => ({
     getPokemonGenerations: builder.query({
       query: () => "generation",
-      providesTags: ["Pokemon"],
+      providesTags: ["Pokedex"],
     }),
     getPokemonListByGeneration: builder.query({
       async queryFn(generationId, _queryApi, _extraOptions, baseQuery) {
@@ -19,7 +21,7 @@ const extendedindexAPI = indexAPI.injectEndpoints({
         ).then((response) => Promise.all(response.map((r) => r.data)));
         return { data: pokemonData };
       },
-      providesTags: ["Pokemon"],
+      providesTags: ["Pokedex"],
     }),
   }),
 });
@@ -27,4 +29,4 @@ const extendedindexAPI = indexAPI.injectEndpoints({
 export const {
   useGetPokemonGenerationsQuery,
   useGetPokemonListByGenerationQuery,
-} = extendedindexAPI;
+} = pokemonAPI;

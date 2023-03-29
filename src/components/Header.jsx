@@ -43,9 +43,13 @@ const Header = () => {
     setDrawer(open);
   };
 
-  const handleSelection = (name) => {
+  const handleSelection = (name, closeMenu = false) => {
     dispatch(setGeneration(name));
     dispatch(setPage(0));
+
+    if (closeMenu) {
+      handleCloseNavMenu();
+    }
   };
 
   const handleOpenNavMenu = (event) => {
@@ -174,9 +178,11 @@ const Header = () => {
                 onClose={handleCloseNavMenu}
               >
                 {generations.map((item) => (
-                  <MenuItem key={item.name} onClick={handleCloseNavMenu}>
+                  <MenuItem
+                    key={item.name}
+                    onClick={() => handleSelection(item.name, true)}
+                  >
                     <Typography
-                      onClick={() => handleSelection(item.name)}
                       textAlign="center"
                       sx={{
                         textTransform: "uppercase",

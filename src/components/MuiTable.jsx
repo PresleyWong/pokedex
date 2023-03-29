@@ -12,7 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { useGetPokemonListByGenerationQuery } from "../redux/api/pokemonAPI";
@@ -29,8 +29,32 @@ const MuiTable = () => {
   const dispatch = useDispatch();
   const currentGeneration = useSelector(selectCurrentGeneration);
   const page = useSelector(selectCurrentPage);
-  const { data, isLoading, isSuccess, isError, error } =
-    useGetPokemonListByGenerationQuery(currentGeneration);
+  const [data, setData] = useState([]);
+  // const { data, isLoading, isSuccess, isError, error } =
+  //   useGetPokemonListByGenerationQuery(currentGeneration);
+
+  useEffect(() => {
+    let abortController = new AbortController();
+    const fetchData = async () => {
+      const generationData = await fetch(
+        `https://pokeapi.co/api/v2/generation/${currentGeneration}`
+      ).then((data) => data.json());
+
+      const pokemonData = await Promise.all(
+        generationData.pokemon_species.map((item) =>
+          fetch(
+            `https://pokeapi.co/api/v2/pokemon/${item.url.match(/\d+/g)[1]}`
+          )
+        )
+      ).then((response) => Promise.all(response.map((r) => r.json())));
+
+      setData(pokemonData);
+    };
+    fetchData();
+    return () => {
+      abortController.abort();
+    };
+  }, [currentGeneration]);
 
   const rowsPerPageOptions = [10, 20, 30, 50, 100];
   const [order, setOrder] = useState("asc");
@@ -146,7 +170,7 @@ const MuiTable = () => {
   };
 
   let content;
-  if (isSuccess) {
+  if (data.length > 0) {
     const rows = data?.map((pokemon) =>
       createData(
         pokemon.name,
@@ -155,7 +179,6 @@ const MuiTable = () => {
       )
     );
 
-    // Avoid a layout jump when reaching the last page with empty rows.
     const numberOfEmptyRows =
       page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
